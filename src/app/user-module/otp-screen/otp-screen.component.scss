@@ -1,0 +1,36 @@
+form {
+  width: 100%;
+  gap: 20px;
+  .fa-eye-position {
+    margin-left: -45px;
+    cursor: pointer;
+    opacity: 0.8;
+    background: transparent;
+  }
+  .input-field-style.ng-touched.ng-invalid {
+    border: 2px solid rgb(255, 115, 115);
+  }
+
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .footer-div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    .footer-part {
+      width: 100%;
+      .submit-button {
+        padding: 14px 20px;
+        width: 100%;
+        border: 0;
+        border-radius: 10px;
+        background: var(--color-yellow);
+      }
+    }
+  }
+}

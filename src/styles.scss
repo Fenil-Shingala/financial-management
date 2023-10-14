@@ -1,0 +1,98 @@
+@import "bootstrap/scss/bootstrap";
+@import "ngx-toastr/toastr";
+@import "swiper/scss";
+@import "swiper/scss/navigation";
+@import "swiper/scss/pagination";
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+:root {
+  --color-eigengrau: #1b212d;
+  --color-yellow: #c8ee44;
+  --color-cadet-gray: #929eae;
+  --color-white-smoke: #f5f5f5;
+  --color-white: #fafafa;
+  --color-green: #29a073;
+  --color-card-bg: linear-gradient(104deg, #4a4a49 2.66%, #20201f 90.57%);
+  --color-rhythm: #78778b;
+  --color-red: red;
+  --color-silver: silver;
+  --color-black: black;
+  --color-dim-gray: #706e6e;
+}
+.cursor-pointer {
+  cursor: pointer;
+}
+input {
+  outline-color: var(--color-yellow);
+}
+.label-text {
+  padding: 14px 10px 10px 0px;
+  color: var(--color-eigengrau);
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.input-field {
+  padding: 15px 25px 16px 20px;
+  border-radius: 10px;
+  border: 1px solid #f2f2f2;
+}
+
+.d-flex-proprty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.main-div {
+  .h-100vh {
+    height: 100vh;
+    padding-left: 8%;
+    padding-right: 12%;
+    .maglo-logo-padding {
+      margin-bottom: 20px;
+      margin-top: 25px;
+    }
+    .login-div {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 90vh;
+      .login-part {
+        gap: 25px;
+        width: 100%;
+        .login-title-text {
+          gap: 8px;
+        }
+      }
+    }
+  }
+  .financial-image {
+    height: 100vh;
+  }
+}
+
+@media only screen and (max-width: 1150px) and (min-width: 768px) {
+  .h-100vh {
+    padding-left: 5% !important;
+    padding-right: 7.5% !important;
+  }
+}
+
+@media (max-width: 767px) {
+  .financial-image {
+    display: none;
+  }
+  .maglo-logo-padding {
+    margin-top: 15px;
+    margin-bottom: 20px;
+  }
+}

@@ -1,0 +1,327 @@
+.main-div {
+  .dashboard-main-div {
+    flex-direction: column;
+    gap: 11px;
+    .cards {
+      .total-balance {
+        padding: 22px 12px;
+        align-items: center;
+        gap: 5px;
+        border-radius: 10px;
+        background: #363a3f;
+
+        .total-balance-img-div {
+          height: 40px;
+          width: 40px;
+          background: #4e5257;
+          text-align: center;
+
+          img {
+            padding-top: 10px;
+          }
+        }
+        .total-balance-amount {
+          flex-direction: column;
+          gap: 5px;
+          p {
+            color: var(--color-cadet-gray);
+            font-size: 14px;
+          }
+          h4 {
+            font-size: 21px;
+          }
+        }
+      }
+      .total-spending {
+        display: flex;
+        padding: 22px 12px;
+        align-items: center;
+        gap: 5px;
+        border-radius: 10px;
+        background: var(--color-white-smoke);
+
+        .total-balance-img-div {
+          height: 40px;
+          width: 40px;
+          background: #ebe8e8;
+          text-align: center;
+
+          img {
+            padding-top: 10px;
+          }
+        }
+        .total-balance-amount {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 10px;
+          p {
+            color: var(--color-cadet-gray);
+            font-size: 14px;
+          }
+          h4 {
+            font-size: 21px;
+          }
+        }
+      }
+    }
+    .graph {
+      border-radius: 10px;
+      border: 1px solid var(--color-white-smoke);
+      padding-top: 10px;
+      .graph-title {
+        .graph-filter {
+          padding: 6px 8px 6px 10px;
+          flex-shrink: 0;
+          background: var(--color-white-smoke);
+          border-radius: 5px;
+          width: 115px;
+        }
+        .dropdown {
+          position: relative;
+          cursor: pointer;
+          display: inline-block;
+          &:hover .dropdown-content {
+            display: block;
+          }
+          .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--color-white-smoke);
+            min-width: 130px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            max-height: 180px;
+            overflow-y: scroll;
+            a {
+              color: var(--color-black);
+              padding: 10px;
+              text-decoration: none;
+              display: block;
+              cursor: pointer;
+              &:hover {
+                background-color: var(--color-white-smoke);
+              }
+            }
+          }
+          ::-webkit-scrollbar {
+            width: 5px;
+          }
+          ::-webkit-scrollbar-thumb {
+            background: var(--color-cadet-gray);
+            border-radius: 10px;
+          }
+        }
+      }
+    }
+    .transaction {
+      border-radius: 10px;
+      border: 1px solid var(--color-white-smoke);
+      padding: 15px 19px 10px 25px;
+      flex-direction: column;
+      .top {
+        p {
+          font-size: 18px;
+          color: var(--color-eigengrau);
+          font-weight: 500;
+        }
+        .view-all-transaction {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          cursor: pointer;
+          p {
+            color: var(--color-green);
+            font-size: 14px;
+            font-weight: 500;
+          }
+          &:hover {
+            text-decoration: underline;
+            color: var(--color-green);
+          }
+        }
+      }
+      .transaction-table {
+        width: auto;
+        overflow-x: auto;
+        table {
+          th {
+            color: var(--color-cadet-gray);
+            font-size: 12px;
+          }
+          tr {
+            height: 40px;
+            .item-name {
+              color: var(--color-eigengrau);
+              max-width: 220px;
+              white-space: nowrap;
+              min-width: 180px;
+              font-weight: 500;
+              font-size: 14px;
+              img {
+                height: 30px;
+              }
+            }
+            .item-type {
+              color: var(--color-cadet-gray);
+              font-size: 14px;
+              max-width: 170px;
+              min-width: 120px;
+            }
+            .item-amount {
+              font-size: 14px;
+              color: var(--color-eigengrau);
+              font-weight: 500;
+              max-width: 170px;
+              min-width: 120px;
+            }
+            .color-green {
+              color: var(--color-green);
+            }
+            .color-red {
+              color: var(--color-red);
+            }
+            .item-date {
+              font-size: 14px;
+              color: var(--color-cadet-gray);
+              max-width: 210px;
+              min-width: 170px;
+            }
+          }
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--color-cadet-gray);
+        border-radius: 10px;
+      }
+    }
+  }
+  .wallet {
+    .title {
+      font-size: 20px;
+      color: var(--color-eigengrau);
+      font-weight: 500;
+    }
+    .cards {
+      .card {
+        background: var(--color-card-bg);
+        border-radius: 15px;
+        height: 240px;
+        cursor: grab;
+        .card-logo {
+          img {
+            height: 37px;
+          }
+        }
+        .card-chip {
+          img {
+            height: 34px;
+          }
+        }
+        .card-number {
+          p {
+            color: var(--color-white);
+            font-size: 16px;
+            font-style: normal;
+            font-weight: 700;
+            line-height: normal;
+            letter-spacing: 5px;
+          }
+        }
+        .card-holder-name {
+          p {
+            color: var(--color-silver);
+            font-size: 17px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: normal;
+            letter-spacing: 1.7px;
+          }
+        }
+        .card-expiry-date {
+          p {
+            color: var(--color-silver);
+            font-size: 11px;
+            width: 111px;
+            line-height: normal;
+            .text {
+              width: 40px;
+            }
+            .date {
+              color: var(--color-white);
+              font-size: 16px;
+              font-weight: 500;
+              letter-spacing: 1.7px;
+            }
+          }
+          .cvv {
+            p {
+              color: var(--color-silver);
+              font-size: 12px;
+              width: 65px;
+              span {
+                color: var(--color-white);
+                font-weight: 500;
+                font-size: 15px;
+                letter-spacing: 1.2px;
+              }
+            }
+          }
+        }
+      }
+    }
+    .dashboard-transaction {
+      .contact {
+        .contact-card {
+          background-color: var(--color-yellow);
+          border: 0;
+          padding: 8px 10px;
+          border-radius: 8px;
+          &:hover {
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 1050px) {
+  .card-number {
+    p {
+      font-size: 16px !important;
+    }
+  }
+  .total-balance {
+    .total-balance-img-div {
+      height: 37px !important;
+      width: 37px !important;
+    }
+    .total-balance-amount {
+      p {
+        font-size: 13px !important;
+      }
+      h4 {
+        font-size: 18px !important;
+      }
+    }
+  }
+  .total-spending {
+    .total-balance-img-div {
+      height: 37px !important;
+      width: 37px !important;
+    }
+    .total-balance-amount {
+      p {
+        font-size: 13px !important;
+      }
+      h4 {
+        font-size: 18px !important;
+      }
+    }
+  }
+}

@@ -1,0 +1,58 @@
+form {
+  width: 100%;
+  gap: 20px;
+  .form-part {
+    .input-field.ng-touched.ng-invalid {
+      border: 2px solid rgb(255, 115, 115);
+    }
+    .error-message {
+      font-size: 14px;
+    }
+    .w-49 {
+      width: 49%;
+    }
+    .fa-eye-position {
+      margin-left: -45px;
+      cursor: pointer;
+      opacity: 0.8;
+      background: transparent;
+    }
+  }
+  .footer-div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+    .footer-part {
+      gap: 15px;
+      width: 100%;
+      .submit-button {
+        padding: 14px 20px;
+        width: 100%;
+        border: 0;
+        border-radius: 10px;
+        background: var(--color-yellow);
+        color: var(--color-eigengrau);
+      }
+      .footer-google {
+        padding: 13px;
+        width: 100%;
+        text-align: center;
+        border-radius: 10px;
+        border: 1px solid var(--color-white-smoke);
+
+        .google-text {
+          color: var(--color-rhythm);
+          padding-left: 10px;
+        }
+      }
+    }
+    .txt-color-cadet-gray {
+      color: var(--color-cadet-gray);
+      .text-eigengrau {
+        color: var(--color-eigengrau);
+      }
+    }
+  }
+}

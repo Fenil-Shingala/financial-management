@@ -1,0 +1,54 @@
+<div class="m-3">
+  <form [formGroup]="addAmountForm" (ngSubmit)="submit()">
+    <mat-form-field class="w-100" *ngIf="!cardData">
+      <mat-label>Select card</mat-label>
+      <mat-select formControlName="receivedFrom">
+        <mat-option
+          *ngFor="let data of allCards"
+          value="{{ data.cardNumber }}"
+          >{{ data.cardNumber }}</mat-option
+        >
+      </mat-select>
+      <mat-error *ngIf="addAmountForm.controls['receivedFrom'].invalid"
+        >Please select card</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field floatLabel="always" class="w-100">
+      <mat-label>Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        class="example-right-align"
+        placeholder="0"
+        formControlName="amount"
+      />
+      <span matTextPrefix>₹&nbsp;</span>
+      <mat-error *ngIf="addAmountForm.controls['amount'].invalid"
+        >Please enter your amount</mat-error
+      >
+      <mat-hint
+        *ngIf="addAmountForm.errors?.['checkCardAmount'] && addAmountForm.controls['receivedFrom'].valid"
+        >Selected card has not enough money</mat-hint
+      >
+    </mat-form-field>
+    <div class="text-end">
+      <button
+        mat-raised-button
+        class="mx-1"
+        (click)="closeDialog()"
+        type="button"
+      >
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        class="mx-1"
+        [ngClass]="{ 'bg-color-yellow': addAmountForm.valid }"
+        type="submit"
+        [disabled]="addAmountForm.invalid"
+      >
+        Add
+      </button>
+    </div>
+  </form>
+</div>

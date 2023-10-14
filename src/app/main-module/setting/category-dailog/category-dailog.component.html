@@ -1,0 +1,26 @@
+<div class="p-3">
+  <h3 class="mb-3">{{ categoryData ? "Update" : "Add" }} category</h3>
+  <form [formGroup]="categoryForm" (ngSubmit)="submit()">
+    <mat-form-field class="w-100">
+      <mat-label>Category</mat-label>
+      <input matInput formControlName="categoryName" />
+      <mat-error *ngIf="categoryForm.controls['categoryName'].invalid"
+        >Please enter category</mat-error
+      >
+    </mat-form-field>
+    <div class="text-end">
+      <button
+        mat-raised-button
+        (click)="closeDialog()"
+        color="warn"
+        class="mx-1"
+        type="button"
+      >
+        Cancel
+      </button>
+      <button mat-raised-button [disabled]="categoryForm.invalid" type="submit" color="primary" class="mx-1">
+        {{ categoryData ? "Update" : "Submit" }}
+      </button>
+    </div>
+  </form>
+</div>

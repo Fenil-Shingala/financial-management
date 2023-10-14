@@ -1,0 +1,76 @@
+<div class="m-4">
+  <h3 class="mb-3 text-center">Add new card</h3>
+  <form [formGroup]="cardForm" (ngSubmit)="onSubmit()">
+    <mat-form-field class="w-100">
+      <mat-label>Account holder name</mat-label>
+      <input matInput formControlName="holderName" />
+      <mat-error *ngIf="cardForm.controls['holderName'].invalid"
+        >Please Enter your holder name</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="w-100">
+      <mat-label>Card number</mat-label>
+      <input
+        matInput
+        formControlName="cardNumber"
+        autocomplete="cc-number"
+        ccNumber
+      />
+      <mat-error
+        *ngIf="
+          cardForm.controls['cardNumber'].invalid &&
+          !cardForm.controls['cardNumber'].hasError('cardDuplicate')
+        "
+        >Card number is not valid</mat-error
+      >
+      <mat-error
+        *ngIf="cardForm.controls['cardNumber'].hasError('cardDuplicate')"
+        >Card has already added</mat-error
+      >
+    </mat-form-field>
+    <div class="w-100 d-flex">
+      <div class="mx-1 w-100">
+        <mat-form-field class="w-100">
+          <mat-label>Expiry date</mat-label>
+          <input
+            matInput
+            formControlName="expiryDate"
+            autocomplete="cc-exp"
+            ccExp
+          />
+          <mat-error *ngIf="cardForm.controls['expiryDate'].invalid"
+            >Expiration date is not valid</mat-error
+          >
+        </mat-form-field>
+      </div>
+      <div class="mx-1 w-100">
+        <mat-form-field class="w-100">
+          <mat-label>CVV</mat-label>
+          <input matInput formControlName="cvv" autocomplete="off" ccCVC />
+          <mat-error *ngIf="cardForm.controls['cvv'].invalid"
+            >Security code is not valid</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="text-end">
+      <button
+        mat-raised-button
+        class="mx-1"
+        type="button"
+        (click)="closeCardDialog()"
+      >
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        [ngClass]="{ 'bg-color-yellow': cardForm.valid }"
+        class="mx-1"
+        type="submit"
+        [disabled]="cardForm.invalid"
+      >
+        Add
+      </button>
+    </div>
+  </form>
+</div>

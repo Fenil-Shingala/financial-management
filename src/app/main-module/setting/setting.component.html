@@ -1,0 +1,152 @@
+<div class="main-div w-100">
+  <mat-tab-group>
+    <mat-tab label="Category">
+      <div class="category">
+        <div class="m-3 add-category">
+          <button (click)="openDialog()">Add category</button>
+        </div>
+        <div>
+          <div class="category-table m-3 w-50">
+            <table
+              mat-table
+              [dataSource]="allCategoryName"
+              *ngIf="allCategoryName ? allCategoryName.length > 0 : false"
+            >
+              <ng-container matColumnDef="category">
+                <th mat-header-cell *matHeaderCellDef>Category</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.categoryName | titlecase }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element">
+                  <mat-icon
+                    color="primary"
+                    class="mx-1"
+                    (click)="openDialog(element)"
+                    >edit</mat-icon
+                  >
+                  <mat-icon
+                    color="warn"
+                    class="mx-1"
+                    (click)="deletCategory(element.id)"
+                    >delete</mat-icon
+                  >
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <div
+              *ngIf="allCategoryName.length <= 0"
+              class="text-center text-muted mt-4"
+            >
+              <h2>Category not available</h2>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+    <mat-tab label="Change password">
+      <div class="d-flex justify-content-center mt-4">
+        <div class="change-password">
+          <form
+            class="d-flex-proprty"
+            [formGroup]="changePasswordForm"
+            (ngSubmit)="submit()"
+          >
+            <div class="m-0 form-part w-100">
+              <label class="m-0 label-text w-100">Old password</label>
+              <input
+                type="{{ oldPasswordType }}"
+                class="w-100 input-field position-relative"
+                placeholder="* * * * * * *"
+                formControlName="oldPassword"
+                [ngStyle]="{
+                  'outline-color':
+                    changePasswordForm.controls['oldPassword'].invalid &&
+                    changePasswordForm.controls['oldPassword'].touched
+                      ? 'red'
+                      : '#c8ee44'
+                }"
+              />
+              <a
+                (click)="togglePasswordVisibility('oldPassword')"
+                class="border-0 fa-eye-position text-black"
+              >
+                <i class="far fa-eye-slash" *ngIf="!oldPasswordVisible"></i>
+                <i class="far fa-eye" *ngIf="oldPasswordVisible"></i>
+              </a>
+              <p
+                class="m-0 text-danger position-absolute error-message"
+                *ngIf="
+                  changePasswordForm.controls['oldPassword'].invalid &&
+                  changePasswordForm.controls['oldPassword'].touched
+                "
+              >
+                Min character 8 (uppe, lower, special, num)
+              </p>
+              <label class="m-0 label-text w-100">New password</label>
+              <input
+                type="{{ newPasswordType }}"
+                class="w-100 input-field position-relative"
+                placeholder="* * * * * * *"
+                formControlName="newPassword"
+                [ngStyle]="{
+                  'outline-color':
+                    changePasswordForm.controls['newPassword'].invalid &&
+                    changePasswordForm.controls['newPassword'].touched
+                      ? 'red'
+                      : '#c8ee44'
+                }"
+              />
+              <a
+                (click)="togglePasswordVisibility('newPassword')"
+                class="border-0 fa-eye-position text-black"
+              >
+                <i class="far fa-eye-slash" *ngIf="!newPasswordVisible"></i>
+                <i class="far fa-eye" *ngIf="newPasswordVisible"></i>
+              </a>
+              <p
+                class="m-0 text-danger position-absolute error-message"
+                *ngIf="
+                  changePasswordForm.controls['newPassword'].invalid &&
+                  changePasswordForm.controls['newPassword'].touched
+                "
+              >
+                Min character 8 (uppe, lower, special, num)
+              </p>
+              <label class="m-0 label-text w-100">Confirm password</label>
+              <input
+                type="{{ confirmPasswordType }}"
+                class="w-100 input-field"
+                placeholder="* * * * * * *"
+                formControlName="confirmPassword"
+              />
+              <a
+                (click)="togglePasswordVisibility('confirmPassword')"
+                class="border-0 fa-eye-position text-black"
+              >
+                <i class="far fa-eye-slash" *ngIf="!confirmPasswordVisible"></i>
+                <i class="far fa-eye" *ngIf="confirmPasswordVisible"></i>
+              </a>
+            </div>
+
+            <div class="footer-div d-flex align-items-center w-100">
+              <div class="footer-part d-flex-proprty w-100">
+                <button
+                  class="submit-button w-100 border-0 cursor-pointer"
+                  type="submit"
+                  [disabled]="changePasswordForm.invalid"
+                >
+                  Change
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

@@ -1,0 +1,155 @@
+<div class="wallet w-100">
+  <div class="main-div">
+    <div class="row m-0 mt-3">
+      <div class="col-sm-4 col-md-5 col-lg-4 mt-2 wallet-cards">
+        <div class="mb-2">
+          <button
+            (click)="openDialog()"
+            class="add-cart-btn d-flex justify-content-center align-items-center border-0 w-100"
+          >
+            <mat-icon>add</mat-icon> Add New Card
+          </button>
+        </div>
+        <div class="cards px-1">
+          <div
+            *ngIf="userAllCards ? userAllCards.length <= 0 : true"
+            class="text-center mt-3 text-muted"
+          >
+            <h4>No card available</h4>
+          </div>
+          <div
+            class="w-100 card p-4 my-3"
+            *ngFor="let card of userAllCards"
+            (click)="selectCard(card.id - 1)"
+            [ngClass]="
+              selectedCard
+                ? { 'active-card': card.id === selectedCard.id }
+                : 'active-card'
+            "
+          >
+            <div class="text-end card-logo">
+              <img
+                src="../../../assets/{{
+                  card.cardNumber[0] === '4'
+                    ? 'visa'
+                    : card.cardNumber[0] === '6'
+                    ? 'discover'
+                    : card.cardNumber[0] === '3'
+                    ? 'american-express'
+                    : card.cardNumber[0] === '5' || card.cardNumber[0] === '2'
+                    ? 'mastercard'
+                    : ''
+                }}.svg"
+                alt=""
+              />
+            </div>
+            <div class="d-flex justify-content-between py-2 card-chip">
+              <img src="../../../assets/cardChip.svg" alt="" />
+              <img src="../../../assets/wifi.3 1.svg" alt="" />
+            </div>
+            <div class="card-number my-1 mt-2">
+              <p class="m-0">{{ card.cardNumber }}</p>
+            </div>
+            <div class="card-holder-name my-1 mt-2">
+              <p class="m-0">{{ card.holderName }}</p>
+            </div>
+            <div
+              class="my-2 card-expiry-date d-flex justify-content-between align-items-center"
+            >
+              <p class="m-0 d-flex justify-content-between align-items-center">
+                <span class="text">VALID THRU</span>
+                <span class="px-1 date"> {{ card.expiryDate }}</span>
+              </p>
+              <div class="cvv">
+                <p
+                  class="m-0 d-flex justify-content-between align-items-center"
+                >
+                  CVV <span class="ps-1">{{ card.cvv }}</span>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-12 col-md-7 col-lg-8 wallet-transaction p-4 pt-0">
+        <div class="title d-flex justify-content-between align-items-center">
+          <p class="m-0">Your Balance</p>
+          <div class="m-0 d-flex align-items-center">
+            <button
+              mat-raised-button
+              [ngClass]="{ 'opacity-50': userAllCards.length <= 0 }"
+              class="me-2 bg-color-yellow"
+              (click)="openAddAmountDialog()"
+              [disabled]="userAllCards.length <= 0"
+            >
+              Add amount
+            </button>
+            <p class="m-0">
+              ₹{{
+                (selectedCard ? selectedCard.cardAmount : 0) | number : "1.2-2"
+              }}
+            </p>
+          </div>
+        </div>
+        <div class="transaction-items mt-3 mx-2">
+          <table
+            mat-table
+            [dataSource]="selectedCardTransaction"
+            *ngIf="
+              selectedCardTransaction
+                ? selectedCardTransaction.length > 0
+                : false
+            "
+          >
+            <ng-container matColumnDef="DATE">
+              <th mat-header-cell *matHeaderCellDef>DATE</th>
+              <td mat-cell *matCellDef="let element" class="item-date">
+                {{ element.time | date : "dd MMM yyyy, hh:mm a" }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="NAME">
+              <th mat-header-cell *matHeaderCellDef>NAME</th>
+              <td mat-cell *matCellDef="let element" class="item-name">
+                <span>{{
+                  element.amountType ? "Amout added in " : "Paid to "
+                }}</span>
+                {{ element.title }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="AMOUNT">
+              <th mat-header-cell *matHeaderCellDef>AMOUNT</th>
+              <td
+                mat-cell
+                *matCellDef="let element"
+                class="item-amount"
+                [ngClass]="{
+                  'color-green': element.amountType,
+                  'color-red': !element.amountType
+                }"
+              >
+                {{ element.amountType ? "+" : "-" }} ₹{{
+                  element.amount | number : "1.2-2"
+                }}
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+          <div
+            *ngIf="
+              selectedCardTransaction
+                ? selectedCardTransaction.length <= 0
+                : true
+            "
+            class="text-center mt-4 text-muted"
+          >
+            <h2>Transaction not availables</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

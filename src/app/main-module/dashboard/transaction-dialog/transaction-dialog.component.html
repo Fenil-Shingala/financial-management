@@ -1,0 +1,107 @@
+<div class="m-3">
+  <h3 class="text-center">To contact</h3>
+  <form [formGroup]="transactionForm" (ngSubmit)="submit()">
+    <mat-form-field class="w-100" *ngIf="expense">
+      <mat-label>Title </mat-label>
+      <input matInput class="example-right-align" formControlName="title" />
+      <mat-error *ngIf="transactionForm.controls['title'].invalid"
+        >Please enter title</mat-error
+      >
+    </mat-form-field>
+    <mat-form-field class="w-100" *ngIf="!expense">
+      <mat-label>Transfer to</mat-label>
+      <mat-select formControlName="paidTo">
+        <mat-option
+          *ngFor="let user of allUser"
+          value="{{ user.email }}"
+          disabled="{{ user.id === currentLoginUser.id }}"
+          >{{ user.email }}</mat-option
+        >
+      </mat-select>
+      <mat-error *ngIf="transactionForm.controls['paidTo'].invalid"
+        >Please select contact</mat-error
+      >
+    </mat-form-field>
+    <div class="d-flex justify-content-between w-100">
+      <div class="w-100 me-1">
+        <mat-form-field class="w-100">
+          <mat-label>Available cards</mat-label>
+          <mat-select
+            formControlName="receivedFrom"
+            (selectionChange)="
+              selectedCardAmountShow(
+                transactionForm.controls['receivedFrom'].value
+              )
+            "
+          >
+            <mat-option
+              *ngFor="let card of allCards"
+              value="{{ card.cardNumber }}"
+              >{{ card.cardNumber }}</mat-option
+            >
+            <mat-option value="maglo wallet">Maglo wallet</mat-option>
+          </mat-select>
+          <mat-error *ngIf="transactionForm.controls['receivedFrom'].invalid"
+            >Please select card</mat-error
+          >
+          <mat-hint *ngIf="transactionForm.controls['receivedFrom'].valid"
+            >₹ {{ selectedCardAmount | number : "1.2-2" }}</mat-hint
+          >
+        </mat-form-field>
+      </div>
+      <div class="w-100 ms-1">
+        <mat-form-field class="w-100">
+          <mat-label>Category</mat-label>
+          <mat-select formControlName="category">
+            <mat-option
+              *ngFor="let item of allCategory"
+              value="{{ item.categoryName }}"
+              >{{ item.categoryName | titlecase }}</mat-option
+            >
+          </mat-select>
+          <mat-error *ngIf="transactionForm.controls['category'].invalid"
+            >Please select category</mat-error
+          >
+        </mat-form-field>
+      </div>
+    </div>
+    <mat-form-field floatLabel="always" class="w-100">
+      <mat-label>Amount</mat-label>
+      <input
+        matInput
+        type="number"
+        class="example-right-align"
+        placeholder="0"
+        formControlName="amount"
+      />
+      <span matTextPrefix>₹&nbsp;</span>
+      <mat-error *ngIf="transactionForm.controls['amount'].invalid"
+        >Please enter amount</mat-error
+      >
+      <mat-hint
+        *ngIf="transactionForm.errors?.['checkCardAmount'] && transactionForm.controls['receivedFrom'].valid"
+        >Selected card has not enough balance</mat-hint
+      >
+    </mat-form-field>
+
+    <div class="text-end">
+      <button
+        mat-raised-button
+        class="mx-1"
+        (click)="closeDialog()"
+        type="button"
+      >
+        Cancel
+      </button>
+      <button
+        mat-raised-button
+        class="mx-1"
+        [ngClass]="{ 'bg-color-yellow': transactionForm.valid }"
+        type="submit"
+        [disabled]="transactionForm.invalid"
+      >
+        Submit
+      </button>
+    </div>
+  </form>
+</div>

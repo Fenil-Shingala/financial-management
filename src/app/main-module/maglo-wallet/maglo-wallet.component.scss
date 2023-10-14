@@ -1,0 +1,60 @@
+.maglo-wallet {
+  .title {
+    .balance {
+      p {
+        font-weight: 500;
+        color: var(--color-eigengrau);
+        font-size: 16px;
+      }
+    }
+    .bg-color-yellow {
+      background: var(--color-yellow);
+      color: var(--color-eigengrau);
+    }
+  }
+  .transaction-items {
+    max-height: 79vh;
+    max-width: 88vw;
+    overflow: auto;
+    th {
+      color: var(--color-cadet-gray);
+      font-size: 13px;
+    }
+    .item-date {
+      font-weight: 500;
+      color: var(--color-rhythm);
+      min-width: 200px;
+      max-width: 230px;
+    }
+    .item-name {
+      font-weight: 500;
+      font-size: 16px;
+      min-width: 300px;
+      max-width: 330px;
+      span {
+        color: var(--color-dim-gray);
+      }
+      color: var(--color-eigengrau);
+    }
+    .item-amount {
+      font-size: 16px;
+      font-weight: 500;
+      min-width: 120px;
+      max-width: 150px;
+    }
+    .color-green {
+      color: var(--color-green);
+    }
+    .color-red {
+      color: var(--color-red);
+    }
+  }
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-cadet-gray);
+  border-radius: 10px;
+}

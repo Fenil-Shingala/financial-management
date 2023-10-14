@@ -1,0 +1,9 @@
+.bg-color-yellow {
+  background: var(--color-yellow) !important;
+  color: var(--color-eigengrau) !important;
+}
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}

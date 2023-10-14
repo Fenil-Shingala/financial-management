@@ -1,0 +1,171 @@
+.wallet {
+  .main-div {
+    .wallet-cards {
+      .add-cart-btn {
+        padding: 10px 14px;
+        background: var(--color-white-smoke);
+        color: var(--color-green);
+        font-weight: 500;
+        border-radius: 8px;
+        cursor: pointer;
+
+        &:hover {
+          background: var(--color-green);
+          color: var(--color-white-smoke);
+        }
+      }
+      .cards {
+        max-height: 540px;
+        overflow-x: auto;
+        .active-card {
+          border: 3.5px solid var(--color-yellow);
+        }
+        .card {
+          background: var(--color-card-bg);
+          border-radius: 15px;
+          height: 240px;
+          cursor: pointer;
+          .card-logo {
+            img {
+              height: 34px;
+            }
+          }
+          .card-chip {
+            img {
+              height: 34px;
+            }
+          }
+          .card-number {
+            p {
+              color: var(--color-white);
+              font-size: 18px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: normal;
+              letter-spacing: 5px;
+            }
+          }
+          .card-holder-name {
+            p {
+              color: var(--color-silver);
+              font-size: 17px;
+              font-style: normal;
+              font-weight: 500;
+              line-height: normal;
+              letter-spacing: 1.7px;
+            }
+          }
+          .card-expiry-date {
+            p {
+              color: var(--color-silver);
+              font-size: 11px;
+              width: 111px;
+              line-height: normal;
+              .text {
+                width: 40px;
+              }
+              .date {
+                color: var(--color-white);
+                font-size: 16px;
+                font-weight: 500;
+                letter-spacing: 1.7px;
+              }
+            }
+            .cvv {
+              p {
+                color: var(--color-silver);
+                font-size: 12px;
+                width: 65px;
+                span {
+                  letter-spacing: 1.2px;
+                  color: var(--color-white);
+                  font-size: 15px;
+                  font-weight: 500;
+                }
+              }
+            }
+          }
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--color-cadet-gray);
+        border-radius: 10px;
+      }
+      .balance {
+        p {
+          color: var(--color-cadet-gray);
+          font-size: 14px;
+        }
+      }
+    }
+    .wallet-transaction {
+      .title {
+        p {
+          font-size: 20px;
+          color: var(--color-eigengrau);
+          font-weight: 500;
+        }
+        .bg-color-yellow {
+          background: var(--color-yellow);
+          color: var(--color-eigengrau);
+        }
+      }
+      .transaction-items {
+        max-height: 79vh;
+        overflow-y: auto;
+        th {
+          color: var(--color-cadet-gray);
+          font-size: 13px;
+        }
+        .item-date {
+          font-weight: 500;
+          color: var(--color-rhythm);
+          min-width: 200px;
+          max-width: 230px;
+        }
+        .item-name {
+          font-weight: 500;
+          font-size: 16px;
+          min-width: 250px;
+          max-width: 280px;
+          span {
+            color: var(--color-dim-gray);
+          }
+          color: var(--color-eigengrau);
+        }
+        .item-amount {
+          font-size: 16px;
+          font-weight: 500;
+          min-width: 130px;
+          max-width: 160px;
+        }
+        .color-green {
+          color: var(--color-green);
+        }
+        .color-red {
+          color: var(--color-red);
+        }
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--color-cadet-gray);
+        border-radius: 10px;
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .row {
+    justify-content: center;
+  }
+  .wallet-cards {
+    width: 80vw;
+  }
+}

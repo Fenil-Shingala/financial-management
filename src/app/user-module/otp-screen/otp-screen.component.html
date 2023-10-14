@@ -1,0 +1,63 @@
+<div class="main-div">
+  <div class="row m-0">
+    <div class="col-sm-12 col-md-6 col-lg-6 col-xl-6 h-100vh">
+      <div class="maglo-logo-padding">
+        <img src="../../../assets/logo.svg" alt="logo" />
+      </div>
+      <div class="login-div">
+        <div class="login-part d-flex-proprty">
+          <div class="login-title-text w-100 d-flex-proprty">
+            <div
+              class="d-flex justify-content-between w-100 align-items-center"
+            >
+              <h2 class="m-0">OTP screen</h2>
+              <mat-icon class="cursor-pointer txt-22" (click)="closePage()"
+                >close</mat-icon
+              >
+            </div>
+            <p class="m-0">
+              Please enter your OTP <b>{{ otp }}</b>
+            </p>
+          </div>
+
+          <form
+            class="d-flex-proprty"
+            [formGroup]="otpForm"
+            (ngSubmit)="submit()"
+          >
+            <div class="m-0 form-part w-100">
+              <label class="m-0 label-text w-100">OTP</label>
+              <input
+                type="number"
+                class="w-100 input-field"
+                placeholder="* * * * * *"
+                formControlName="otpNumber"
+              />
+              <a
+                *ngIf="otpForm.value.otpNumber === otp"
+                class="fa-eye-position text-success border-0"
+              >
+                <i class="fa fa-check"></i>
+              </a>
+            </div>
+
+            <div class="footer-div">
+              <div class="footer-part d-flex-proprty">
+                <button
+                  class="submit-button cursor-pointer"
+                  type="submit"
+                  [disabled]="otpForm.invalid"
+                >
+                  Submit
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-6 col-xl-6 p-0 financial-image">
+      <img src="../../../assets/financial.png" alt="" class="w-100 h-100" />
+    </div>
+  </div>
+</div>

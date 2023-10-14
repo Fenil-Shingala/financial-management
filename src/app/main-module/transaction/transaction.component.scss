@@ -1,0 +1,62 @@
+.transaction {
+  .main-div {
+    width: 100%;
+    h5 {
+      span {
+        color: var(--color-rhythm);
+      }
+    }
+    .transaction-table {
+      max-width: 90vw;
+      max-height: 84vh;
+      overflow: auto;
+      th {
+        color: var(--color-cadet-gray);
+        font-size: 13px;
+      }
+      .item-name {
+        max-width: 220px;
+        white-space: nowrap;
+        min-width: 180px;
+        font-weight: 500;
+      }
+      .item-type {
+        max-width: 170px;
+        min-width: 120px;
+        color: var(--color-rhythm);
+        font-weight: 500;
+      }
+      .item-amount {
+        max-width: 170px;
+        min-width: 120px;
+      }
+      .color-green {
+        color: var(--color-green);
+        font-weight: 500;
+      }
+      .color-red {
+        color: var(--color-red);
+        font-weight: 500;
+      }
+      .item-date {
+        max-width: 210px;
+        min-width: 185px;
+        font-weight: 500;
+        color: var(--color-rhythm);
+      }
+      .item-id {
+        width: 190px;
+        color: var(--color-rhythm);
+        font-weight: 500;
+      }
+    }
+  }
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-cadet-gray);
+    border-radius: 10px;
+  }
+}
