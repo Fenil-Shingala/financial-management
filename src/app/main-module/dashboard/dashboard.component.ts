@@ -74,7 +74,7 @@ export class DashboardComponent {
     this.getAllCategory();
     const transactionDate = new Date();
     const dayOfMonth = transactionDate.getMonth() + 1;
-    this.selectedMonth = this.months[dayOfMonth-1];
+    this.selectedMonth = this.months[dayOfMonth - 1];
     this.startDate = `2023-${
       dayOfMonth > 9 ? dayOfMonth : '0' + dayOfMonth
     }-01`;
