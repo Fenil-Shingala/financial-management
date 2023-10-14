@@ -12,8 +12,18 @@
           "cardNumber": "5425 2334 3010 9903",
           "expiryDate": "08 / 30",
           "cvv": "001",
-          "cardAmount": 7908.75,
+          "cardAmount": 2908.75,
           "cardTransaction": [
+            {
+              "title": "demo",
+              "category": "Home",
+              "amount": 5000,
+              "receivedFrom": "5425 2334 3010 9903",
+              "paidTo": null,
+              "time": "2023-10-14T07:08:38.631Z",
+              "id": "ADA25410",
+              "amountType": false
+            },
             {
               "receivedFrom": "5425 2334 3010 9903",
               "amount": 853.26,

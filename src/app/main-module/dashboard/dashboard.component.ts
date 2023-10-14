@@ -74,17 +74,17 @@ export class DashboardComponent {
     this.getAllCategory();
     const transactionDate = new Date();
     const dayOfMonth = transactionDate.getMonth() + 1;
-    this.selectedMonth = 'September';
+    this.selectedMonth = this.months[dayOfMonth-1];
     this.startDate = `2023-${
       dayOfMonth > 9 ? dayOfMonth : '0' + dayOfMonth
     }-01`;
-    this.endDate = `2023-${
-      dayOfMonth > 9 ? dayOfMonth : '0' + dayOfMonth
-    }-${transactionDate.getDate()+1}`;    
+    this.endDate = `2023-${dayOfMonth > 9 ? dayOfMonth : '0' + dayOfMonth}-${
+      transactionDate.getDate() + 1
+    }`;
     !this.currentLoginUser
       ? this.route.navigate(['/user-module/login'])
       : this.route.navigate(['/main-module/dashboard']);
-    this.sharedService.headerTitle.next('Dashboard');    
+    this.sharedService.headerTitle.next('Dashboard');
   }
 
   getAllCards(): void {
