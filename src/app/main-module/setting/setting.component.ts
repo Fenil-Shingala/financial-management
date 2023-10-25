@@ -31,9 +31,10 @@ export class SettingComponent {
   allCategoryName: Category[] = [];
   changePasswordForm!: FormGroup;
   categoryDataDestroy!: Subscription;
-  currentLoginUser = localStorage.getItem('loginUser')
+  loginUser = localStorage.getItem('loginUser')
     ? JSON.parse(localStorage.getItem('loginUser') || '')
     : null;
+  currentLoginUser!: User;
 
   constructor(
     private changePasswordFormBuilder: FormBuilder,
@@ -63,16 +64,28 @@ export class SettingComponent {
     this.confirmPasswordType = 'password';
     this.getUserData();
     this.getCategoryData();
+    this.getLoginUSerData();
     this.categoryDataDestroy = this.sharedService.categoryData.subscribe({
       next: () => {
         this.getCategoryData();
       },
       error: () => {},
     });
-    !this.currentLoginUser
+    !this.loginUser
       ? this.route.navigate(['/user-module/login'])
       : this.route.navigate(['/main-module/setting']);
     this.sharedService.headerTitle.next('Setting');
+  }
+
+  getLoginUSerData(): void {
+    this.userService.getAllUserData().subscribe({
+      next: (value) => {
+        this.currentLoginUser = value.find(
+          (item) => item.id === this.loginUser.id
+        ) as User;
+      },
+      error: () => {},
+    });
   }
 
   getUserData(): void {

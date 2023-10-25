@@ -4,7 +4,7 @@
       "firstName": "Fenil",
       "lastName": "Shingala",
       "email": "fenil@gmail.com",
-      "password": "Fenil@464",
+      "password": "Fenil@123",
       "walletAmout": 79999.98000000001,
       "cards": [
         {
@@ -12,8 +12,37 @@
           "cardNumber": "5425 2334 3010 9903",
           "expiryDate": "08 / 30",
           "cvv": "001",
-          "cardAmount": 2908.75,
+          "cardAmount": 12691.5,
           "cardTransaction": [
+            {
+              "title": "demo",
+              "category": "Home",
+              "amount": 15023.25,
+              "receivedFrom": "5425 2334 3010 9903",
+              "paidTo": null,
+              "time": "2023-10-25T08:37:02.675Z",
+              "id": "620567A1",
+              "amountType": false
+            },
+            {
+              "receivedFrom": "Added amount in card",
+              "amount": 25306,
+              "title": "Card",
+              "time": "2023-10-25T08:36:46.333Z",
+              "id": "41683034",
+              "amountType": true,
+              "category": "In card"
+            },
+            {
+              "title": "sdfv",
+              "category": "Frienduuj",
+              "amount": 500,
+              "receivedFrom": "5425 2334 3010 9903",
+              "paidTo": null,
+              "time": "2023-10-25T08:36:29.169Z",
+              "id": "E40A2119",
+              "amountType": false
+            },
             {
               "title": "demo",
               "category": "Home",
@@ -775,8 +804,18 @@
           "cardNumber": "5555 5555 5555 4444",
           "expiryDate": "09 / 87",
           "cvv": "987",
-          "cardAmount": 55800,
+          "cardAmount": 50000,
           "cardTransaction": [
+            {
+              "title": "loss",
+              "category": "Home",
+              "amount": 5800,
+              "receivedFrom": "5555 5555 5555 4444",
+              "paidTo": null,
+              "time": "2023-10-25T08:40:50.317Z",
+              "id": "2999C062",
+              "amountType": false
+            },
             {
               "title": "asdfesf",
               "category": "Home",
