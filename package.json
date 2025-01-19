@@ -7,7 +7,7 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:prod" : "ng build --base-href 'https://Fenil-Shingala.github.io/financial-management/'",
+    "build:prod" : "ng build --base-href https://Fenil-Shingala.github.io/financial-management/",
     "build:git" : "npx angular-cli-ghpages --dir=dist/financial-management"
   },
   "private": true,
