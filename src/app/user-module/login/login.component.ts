@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { User } from 'src/app/interface/user';
 import { UserServiceService } from 'src/app/services/api-service/user-service/user-service.service';
+import { CryptoService } from 'src/app/services/crypto/crypto.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,8 @@ export class LoginComponent {
     private loginFormBuilder: FormBuilder,
     private toster: ToastrService,
     private route: Router,
-    private userService: UserServiceService
+    private userService: UserServiceService,
+    private crypto: CryptoService
   ) {}
 
   ngOnInit() {
@@ -52,11 +54,14 @@ export class LoginComponent {
   }
 
   submit(): void {
-    const checkLoginDetails = this.allUserData.find(
-      (data) =>
-        data.email === this.loginFrom.value.email &&
-        data.password === this.loginFrom.value.password
-    );
+    const email = String(this.loginFrom.value.email || '').trim();
+    const password = String(this.loginFrom.value.password || '');
+    const checkLoginDetails = this.allUserData.find((data) => {
+      if (data.email !== email) return false;
+      const stored = data.password || '';
+      const decrypted = this.crypto.decrypt(stored);
+      return decrypted === password;
+    });
 
     if (checkLoginDetails) {
       this.route.navigate(['/main-module/dashboard']);

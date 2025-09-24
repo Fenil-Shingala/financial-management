@@ -7,8 +7,9 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "build:prod" : "ng build --base-href https://Fenil-Shingala.github.io/financial-management/",
-    "build:git" : "npx angular-cli-ghpages --dir=dist/financial-management"
+    "json:serve": "json-server --watch user.json --port 3000",
+    "build:prod": "ng build --base-href https://Fenil-Shingala.github.io/financial-management/",
+    "build:git": "npx angular-cli-ghpages --dir=dist/financial-management"
   },
   "private": true,
   "dependencies": {
@@ -29,6 +30,7 @@
     "angular-highcharts": "^16.0.0",
     "bootstrap": "^5.2.3",
     "card-validator": "^8.1.1",
+    "crypto-js": "^4.2.0",
     "dateformat": "^5.0.3",
     "highcharts": "^11.1.0",
     "ng-apexcharts": "^1.8.0",
@@ -44,7 +46,9 @@
     "@angular/cli": "~16.1.4",
     "@angular/compiler-cli": "^16.1.0",
     "@angular/localize": "^16.1.0",
+    "@types/crypto-js": "^4.2.2",
     "@types/jasmine": "~4.3.0",
+    "json-server": "^0.17.4",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.2.0",

@@ -11,6 +11,7 @@ import { SharedServiceService } from 'src/app/services/shared-service/shared-ser
 import { Subscription } from 'rxjs';
 import { UserServiceService } from 'src/app/services/api-service/user-service/user-service.service';
 import { CategoryServiceService } from 'src/app/services/api-service/category-service/category-service.service';
+import { CryptoService } from 'src/app/services/crypto/crypto.service';
 
 @Component({
   selector: 'app-setting',
@@ -43,7 +44,8 @@ export class SettingComponent {
     private userService: UserServiceService,
     private sharedService: SharedServiceService,
     private categoryService: CategoryServiceService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private crypto: CryptoService
   ) {
     this.changePasswordForm = this.changePasswordFormBuilder.group({
       oldPassword: [
@@ -126,17 +128,18 @@ export class SettingComponent {
   }
 
   submit(): void {
-    if (
-      this.changePasswordForm.value.oldPassword ===
-      this.currentLoginUser.password
-    ) {
+    const stored = this.currentLoginUser.password || '';
+    const decrypted = this.crypto.decrypt(stored);
+    if (this.changePasswordForm.value.oldPassword === decrypted) {
       if (
         this.changePasswordForm.value.newPassword ===
         this.changePasswordForm.value.confirmPassword
       ) {
         const updatedData = {
           ...this.currentLoginUser,
-          password: this.changePasswordForm.value.newPassword,
+          password: this.crypto.encrypt(
+            this.changePasswordForm.value.newPassword
+          ),
         };
         this.userService
           .updateUserData(this.currentLoginUser.id, updatedData)

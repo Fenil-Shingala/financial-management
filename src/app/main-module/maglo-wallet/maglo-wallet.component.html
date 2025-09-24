@@ -1,4 +1,5 @@
-<div class="maglo-wallet w-100">
+<div class="maglo-wallet w-100 position-relative">
+  <app-loader></app-loader>
   <div class="mt-1 px-4">
     <div class="title d-flex align-items-center justify-content-between">
       <div class="balance">
@@ -53,7 +54,7 @@
           </td>
         </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
       <div *ngIf="magloWalletTransaction.length <= 0" class="mt-3">

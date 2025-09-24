@@ -6,12 +6,16 @@
     z-index: 99;
   }
   .sidebar-section {
-    padding: 15px 25px 50px 25px;
+    padding: 15px 25px 15px 25px;
     gap: 40px;
     justify-content: center;
     background: var(--color-white);
+    height: 100vh;
+
     .sidebar-component {
-      gap: 290px;
+      height: 100%;
+      justify-content: space-between;
+
       .nav-items {
         .bar {
           display: flex;

@@ -13,6 +13,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Card } from 'src/app/interface/card';
 import { CardServiceService } from 'src/app/services/api-service/card-service/card-service.service';
 import { noSpace } from 'src/app/validators/noSpace.validators';
+import { CryptoService } from 'src/app/services/crypto/crypto.service';
 
 @Component({
   selector: 'app-card-dialog',
@@ -30,7 +31,8 @@ export class CardDialogComponent {
     private cardFormBuilder: FormBuilder,
     private toster: ToastrService,
     private cardService: CardServiceService,
-    private dialogRef: MatDialogRef<CardDialogComponent>
+    private dialogRef: MatDialogRef<CardDialogComponent>,
+    private crypto: CryptoService
   ) {}
 
   ngOnInit() {
@@ -56,7 +58,11 @@ export class CardDialogComponent {
   getAllCards(): void {
     this.cardService.getUserCards(this.currentLoginUser.id).subscribe({
       next: (value) => {
-        this.userAllCards = value.cards;
+        this.userAllCards = (value.cards || []).map((c) => ({
+          ...c,
+          cardNumber: this.crypto.decrypt(c.cardNumber),
+          cvv: this.crypto.decrypt(c.cvv),
+        }));
       },
       error: () => {},
     });
@@ -66,6 +72,8 @@ export class CardDialogComponent {
     const updatedCardValue = {
       ...this.cardForm.value,
       holderName: this.cardForm.value.holderName.trim(),
+      cardNumber: this.crypto.encrypt(this.cardForm.value.cardNumber),
+      cvv: this.crypto.encrypt(this.cardForm.value.cvv),
       cardAmount: 0,
       cardTransaction: [],
       id: this.userAllCards.length + 1,

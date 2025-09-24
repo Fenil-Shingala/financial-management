@@ -1,69 +1,118 @@
-<div class="main-div w-100">
+<div class="main-div w-100 position-relative">
   <div class="row m-0 mt-2">
     <div
       class="dashboard-main-div d-inline-flex align-items-start px-3 col-sm-12 col-md-12 col-lg-7 col-xl-8"
     >
-      <div
-        class="cards d-flex justify-content-around align-items-start mt-3 w-100 row m-0"
-      >
-        <div class="col-sm-12 col-md-4 mb-2">
-          <div class="total-balance d-flex">
+      <div class="cards mt-3 w-100 m-0">
+        <div class="mb-2 px-0">
+          <div class="total-balance d-flex box-shadow">
             <div class="rounded-circle total-balance-img-div">
               <img src="assets/totalBalanceWallet.svg" alt="" />
             </div>
             <div class="total-balance-amount d-flex align-items-start">
               <p class="m-0">Total balance</p>
               <h4 class="m-0 text-light">
-                ₹
                 {{
                   (currentActiveCard && currentActiveCard.cardAmount) || 0
-                    | number : "1.2-2"
+                    | currency : "INR"
                 }}
               </h4>
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-4 mb-2">
-          <div class="total-spending">
+        <div class="mb-2 px-0">
+          <div class="total-spending box-shadow">
             <div class="rounded-circle total-balance-img-div">
               <img src="assets/totalSpendingWallet.svg" alt="" />
             </div>
             <div class="total-balance-amount">
               <p class="m-0">Total spending</p>
-              <h4 class="m-0">₹ {{ totalSpendAmount | number : "1.2-2" }}</h4>
+              <h4 class="m-0">{{ totalSpendAmount | currency : "INR" }}</h4>
             </div>
           </div>
         </div>
-        <div class="col-sm-6 col-md-4 mb-2">
-          <div class="total-spending">
+        <div class="mb-2 px-0">
+          <div class="total-spending box-shadow">
             <div class="rounded-circle total-balance-img-div">
               <img src=" assets/totalTransactionWallet.svg" alt="" />
             </div>
             <div class="total-balance-amount">
               <p class="m-0">Total added</p>
               <h4 class="m-0">
-                ₹
-                {{ totalAddAmount | number : "1.2-2" }}
+                {{ totalAddAmount | currency : "INR" }}
               </h4>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="graph w-100 px-3">
+      <div class="graph w-100 px-3 box-shadow">
         <div
           class="graph-title d-flex align-items-center justify-content-between w-100"
         >
           <h5 class="m-0">Working capital</h5>
-          <div class="graph-filter dropdown">
-            <div class="d-flex align-items-center justify-content-end">
-              <span>{{ selectedMonth }}</span>
-              <mat-icon>arrow_drop_down</mat-icon>
+          <div class="d-flex align-items-center flex-wrap gap-2">
+            <div class="graph-filter dropdown me-2 small-dd">
+              <div class="d-flex align-items-center justify-content-end">
+                <span>{{ selectedMonth }}</span>
+                <mat-icon>arrow_drop_down</mat-icon>
+              </div>
+              <div class="dropdown-content">
+                <a
+                  *ngFor="let item of filteredMonths"
+                  [class.active-option]="item === selectedMonth"
+                  (click)="filterGraphData(item)"
+                  >{{ item }}</a
+                >
+              </div>
             </div>
-            <div class="dropdown-content">
-              <a *ngFor="let item of months" (click)="filterGraphData(item)">{{
-                item
-              }}</a>
+            <div class="graph-filter dropdown me-2 small-dd">
+              <div class="d-flex align-items-center justify-content-end">
+                <span>{{ selectedYear }}</span>
+                <mat-icon>arrow_drop_down</mat-icon>
+              </div>
+              <div class="dropdown-content">
+                <a
+                  *ngFor="let y of years"
+                  [class.active-option]="y === selectedYear"
+                  (click)="setYear(y)"
+                  >{{ y }}</a
+                >
+              </div>
+            </div>
+            <div class="btn-group me-3">
+              <button
+                class="btn btn-sm btn-outline-light"
+                [class.active]="mode === 'expense'"
+                (click)="setMode('expense')"
+              >
+                Expense
+              </button>
+              <button
+                class="btn btn-sm btn-outline-light"
+                [class.active]="mode === 'income'"
+                (click)="setMode('income')"
+              >
+                Income
+              </button>
+              <button
+                class="btn btn-sm btn-outline-light"
+                [class.active]="mode === 'net'"
+                (click)="setMode('net')"
+              >
+                Net
+              </button>
+            </div>
+            <div class="form-check form-switch text-nowrap">
+              <input
+                class="form-check-input"
+                type="checkbox"
+                id="includeWallet"
+                (change)="toggleIncludeWallet()"
+              />
+              <label class="form-check-label" for="includeWallet"
+                >Include wallet</label
+              >
             </div>
           </div>
         </div>
@@ -79,7 +128,7 @@
       </div>
 
       <div
-        class="transaction w-100 d-flex align-items-start justify-content-centers"
+        class="transaction w-100 d-flex align-items-start justify-content-centers box-shadow mb-3"
       >
         <div
           class="top w-100 d-flex justify-content-between align-items-center"
@@ -125,9 +174,8 @@
                   'color-red': !element.amountType
                 }"
               >
-                {{ element.amountType ? "+" : "-" }} ₹{{
-                  element.amount | number : "1.2-2"
-                }}
+                {{ element.amountType ? "+" : "-" }}
+                {{ element.amount | currency : "INR" }}
               </td>
             </ng-container>
 
@@ -145,7 +193,10 @@
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumns; sticky: true"
+            ></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
           <div
@@ -161,7 +212,9 @@
         </div>
       </div>
     </div>
-    <div class="col-sm-12 col-lg-5 col-md-12 col-xl-4 mt-3 wallet">
+    <div
+      class="col-sm-12 col-lg-5 col-md-12 col-xl-4 mt-3 wallet box-shadow mb-3"
+    >
       <div class="title">
         <p class="m-0">Wallet</p>
       </div>

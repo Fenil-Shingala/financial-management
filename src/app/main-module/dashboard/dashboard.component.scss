@@ -3,6 +3,18 @@
     flex-direction: column;
     gap: 11px;
     .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(32%, 1fr));
+      gap: 10px;
+
+      @media screen and (max-width: 767px) {
+        grid-template-columns: repeat(auto-fit, minmax(48%, 1fr));
+      }
+
+      @media screen and (max-width: 500px) {
+        grid-template-columns: repeat(auto-fit, minmax(100%, 1fr));
+      }
+
       .total-balance {
         padding: 22px 12px;
         align-items: center;
@@ -28,10 +40,11 @@
             font-size: 14px;
           }
           h4 {
-            font-size: 21px;
+            font-size: 20px;
           }
         }
       }
+
       .total-spending {
         display: flex;
         padding: 22px 12px;
@@ -60,7 +73,7 @@
             font-size: 14px;
           }
           h4 {
-            font-size: 21px;
+            font-size: 20px;
           }
         }
       }
@@ -70,12 +83,26 @@
       border: 1px solid var(--color-white-smoke);
       padding-top: 10px;
       .graph-title {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
         .graph-filter {
-          padding: 6px 8px 6px 10px;
+          padding: 4px 8px;
           flex-shrink: 0;
           background: var(--color-white-smoke);
           border-radius: 5px;
-          width: 115px;
+          width: 60px;
+        }
+        .small-dd {
+          .d-flex span {
+            font-size: 12px;
+          }
+          mat-icon {
+            font-size: 18px;
+            height: 18px;
+            width: 18px;
+            line-height: 18px;
+          }
         }
         .dropdown {
           position: relative;
@@ -88,19 +115,24 @@
             display: none;
             position: absolute;
             background-color: var(--color-white-smoke);
-            min-width: 130px;
+            min-width: 110px;
             box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
             z-index: 1;
             max-height: 180px;
             overflow-y: scroll;
             a {
               color: var(--color-black);
-              padding: 10px;
+              padding: 8px 10px;
               text-decoration: none;
               display: block;
               cursor: pointer;
               &:hover {
                 background-color: var(--color-white-smoke);
+              }
+              &.active-option {
+                background: var(--color-yellow);
+                color: var(--color-black);
+                font-weight: 600;
               }
             }
           }
@@ -110,6 +142,31 @@
           ::-webkit-scrollbar-thumb {
             background: var(--color-cadet-gray);
             border-radius: 10px;
+          }
+        }
+        .btn-group {
+          .btn {
+            padding: 4px 10px;
+            color: var(--color-eigengrau);
+            border-color: var(--color-white-smoke);
+            &:hover {
+              background: var(--color-white-smoke);
+            }
+            &.active {
+              background: var(--color-yellow);
+              color: var(--color-black);
+              border-color: var(--color-yellow);
+            }
+          }
+        }
+        .form-check.form-switch {
+          .form-check-input {
+            cursor: pointer;
+          }
+          .form-check-label {
+            margin-left: 6px;
+            cursor: pointer;
+            color: var(--color-eigengrau);
           }
         }
       }
@@ -201,6 +258,7 @@
     }
   }
   .wallet {
+    border-radius: 12px;
     .title {
       font-size: 20px;
       color: var(--color-eigengrau);
@@ -212,6 +270,8 @@
         border-radius: 15px;
         height: 240px;
         cursor: grab;
+        border: 4px solid var(--color-white);
+
         .card-logo {
           img {
             height: 37px;

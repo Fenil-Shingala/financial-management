@@ -52,6 +52,10 @@ input {
   align-items: flex-start;
 }
 
+.box-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
 .main-div {
   .h-100vh {
     height: 100vh;

@@ -1,6 +1,7 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
 import {
   ApexAxisChartSeries,
+  ApexFill,
   ApexGrid,
   ApexTitleSubtitle,
   ApexXAxis,
@@ -16,6 +17,7 @@ import { Category } from 'src/app/interface/category';
 import Swiper from 'swiper';
 import { CardServiceService } from 'src/app/services/api-service/card-service/card-service.service';
 import { CategoryServiceService } from 'src/app/services/api-service/category-service/category-service.service';
+import { CryptoService } from 'src/app/services/crypto/crypto.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,20 +30,25 @@ export class DashboardComponent {
   startDate = '';
   endDate = '';
   selectedMonth!: string;
+  selectedYear!: number;
+  years: number[] = [];
+  filteredMonths: string[] = [];
+  mode: 'expense' | 'income' | 'net' = 'net';
+  includeWallet = false;
   graphAmount: number[] = [];
   months = [
-    'January',
-    'February',
-    'March',
-    'April',
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
     'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
   displayedColumns: string[] = ['NAME', 'TYPE', 'AMOUNT', 'DATE', 'INVOICE ID'];
   userAllCards: Card[] = [];
@@ -52,6 +59,7 @@ export class DashboardComponent {
   title!: ApexTitleSubtitle;
   xaxis!: ApexXAxis;
   grid!: ApexGrid;
+  fill!: ApexFill;
   currentActiveCard!: Card;
   currentLoginUser = localStorage.getItem('loginUser')
     ? JSON.parse(localStorage.getItem('loginUser') || '')
@@ -64,23 +72,23 @@ export class DashboardComponent {
     private route: Router,
     public dialog: MatDialog,
     private toastr: ToastrService,
+    private crypto: CryptoService,
     private changeDetectorRef: ChangeDetectorRef
-  ) {
-    this.graphDetails();
-  }
+  ) {}
 
   ngOnInit() {
+    this.graphDetails();
     this.getAllCards();
     this.getAllCategory();
+
     const transactionDate = new Date();
     const dayOfMonth = transactionDate.getMonth() + 1;
     this.selectedMonth = this.months[dayOfMonth - 1];
-    this.startDate = `2023-${
-      dayOfMonth > 9 ? dayOfMonth : '0' + dayOfMonth
-    }-01`;
-    this.endDate = `2023-${dayOfMonth > 9 ? dayOfMonth : '0' + dayOfMonth}-${
-      transactionDate.getDate() + 1
-    }`;
+    this.selectedYear = transactionDate.getFullYear();
+
+    for (let y = 2023; y <= this.selectedYear; y++) this.years.push(y);
+    this.computeFilteredMonths();
+    this.updateRange();
     !this.currentLoginUser
       ? this.route.navigate(['/user-module/login'])
       : this.route.navigate(['/main-module/dashboard']);
@@ -90,7 +98,35 @@ export class DashboardComponent {
   getAllCards(): void {
     this.cardService.getUserCards(this.currentLoginUser.id).subscribe({
       next: (value) => {
-        this.userAllCards = value.cards;
+        this.userAllCards = (value.cards || []).map((c) => ({
+          ...c,
+          cardNumber: this.crypto.decrypt(c.cardNumber),
+          cvv: this.crypto.decrypt(c.cvv),
+        }));
+        // @ts-ignore - runtime property exists on API response for walletTransaction
+        this.walletTransactions = (value as any).walletTransaction || [];
+
+        // Initialize active card and graph on first load to avoid blank chart
+        if (this.userAllCards.length > 0 && !this.currentActiveCard) {
+          this.currentActiveCard = this.userAllCards[0];
+          this.totalAddAmount = 0;
+          this.totalSpendAmount = 0;
+          this.currentActiveCardTransaction = [];
+          this.currentActiveCard.cardTransaction?.forEach(
+            (tx: Transaction, index: number) => {
+              if (index < 3) this.currentActiveCardTransaction.push(tx);
+              tx.amountType
+                ? (this.totalAddAmount += tx.amount as number)
+                : (this.totalSpendAmount += tx.amount as number);
+            }
+          );
+          this.graphDataUpdate(
+            this.currentActiveCard.cardTransaction,
+            this.userAllCards.length
+          );
+          this.changeDetectorRef.detectChanges();
+          this.fakeResize();
+        }
       },
       error: () => {},
     });
@@ -114,7 +150,7 @@ export class DashboardComponent {
     ];
     this.chart = {
       height: 250,
-      type: 'line',
+      type: 'area',
       zoom: {
         enabled: false,
       },
@@ -135,6 +171,16 @@ export class DashboardComponent {
         '26 - 30',
       ],
     };
+    this.fill = {
+      type: 'gradient',
+      gradient: {
+        shadeIntensity: 1,
+        inverseColors: false,
+        opacityFrom: 0.5,
+        opacityTo: 0,
+        stops: [0, 90, 100],
+      },
+    };
     this.grid = {
       row: {
         colors: ['#f3f3f3', 'transparent'],
@@ -145,36 +191,71 @@ export class DashboardComponent {
 
   graphDataUpdate(transaction: Transaction[], cardsLength: number): void {
     if ((cardsLength as number) > 0) {
-      const filterDate: Transaction[] = [];
-      transaction.filter((value) => {
-        if (
-          !value.amountType &&
-          value.time >= this.startDate &&
-          value.time <= this.endDate
-        ) {
-          filterDate.unshift(value);
+      const monthIndex = this.months.indexOf(this.selectedMonth);
+      const start = new Date(this.selectedYear, monthIndex, 1, 0, 0, 0, 0);
+      const end = new Date(
+        this.selectedYear,
+        monthIndex + 1,
+        0,
+        23,
+        59,
+        59,
+        999
+      );
+      const daysInMonth = end.getDate();
+      const bucketSize = 5;
+      const numBuckets = Math.ceil(daysInMonth / bucketSize);
+
+      const makeLabels = () => {
+        const labels: string[] = [];
+        for (let i = 0; i < numBuckets; i++) {
+          const from = i * bucketSize + 1;
+          const to = Math.min((i + 1) * bucketSize, daysInMonth);
+          labels.push(`${from} - ${to}`);
         }
-      });
-      const groupSums = Array(Math.ceil(30 / 5)).fill(0);
-      filterDate.map((transaction) => {
-        const transactionDate = new Date(transaction.time);
-        const dayOfMonth = transactionDate.getDate();
-        const groupIndex = Math.floor((dayOfMonth - 1) / 5);
-        groupSums[groupIndex] += transaction.amount;
+        return labels;
+      };
+
+      const walletList: Transaction[] = (this as any).walletTransactions || [];
+      const allTx: Transaction[] = this.includeWallet
+        ? [...transaction, ...walletList]
+        : [...transaction];
+
+      const monthTx = allTx.filter((t) => {
+        const d = new Date(t.time);
+        return d >= start && d <= end;
       });
 
-      for (let i = 0; i < groupSums.length; i++) {
-        !groupSums[i]
-          ? (groupSums[i] = 0)
-          : (groupSums[i] = groupSums[i].toFixed(2));
+      const expenseSums = Array(numBuckets).fill(0);
+      const incomeSums = Array(numBuckets).fill(0);
+      monthTx.forEach((tx) => {
+        const d = new Date(tx.time);
+        const day = d.getDate();
+        const idx = Math.min(
+          Math.floor((day - 1) / bucketSize),
+          numBuckets - 1
+        );
+        const amt = Number(tx.amount || 0);
+        if (tx.amountType) incomeSums[idx] += amt;
+        else expenseSums[idx] += amt;
+      });
+
+      const fix2 = (arr: number[]) =>
+        arr.map((v) => Number((v || 0).toFixed(2)));
+      const exp = fix2(expenseSums);
+      const inc = fix2(incomeSums);
+      const net = fix2(inc.map((v, i) => v - exp[i]));
+
+      this.xaxis = { ...this.xaxis, categories: makeLabels() } as ApexXAxis;
+
+      if (this.mode === 'income') {
+        this.series = [{ name: 'Income', data: inc }];
+      } else if (this.mode === 'net') {
+        this.series = [{ name: 'Net (Income - Expense)', data: net }];
+      } else {
+        this.series = [{ name: 'Expense', data: exp }];
       }
-
-      this.series = [
-        {
-          name: 'Total expense amount',
-          data: groupSums,
-        },
-      ];
+      this.changeDetectorRef.detectChanges();
     }
   }
 
@@ -182,23 +263,26 @@ export class DashboardComponent {
     this.cardService.getUserCards(this.currentLoginUser.id).subscribe({
       next: (value) => {
         if (value.cards.length >= 0) {
-          this.currentActiveCard = value.cards[e.activeIndex];
+          const cards = (value.cards || []).map((c) => ({
+            ...c,
+            cardNumber: this.crypto.decrypt(c.cardNumber),
+            cvv: this.crypto.decrypt(c.cvv),
+          }));
+          this.currentActiveCard = cards[e.activeIndex];
           this.currentActiveCardTransaction = [];
-          value.cards[e.activeIndex]?.cardTransaction.map(
+          cards[e.activeIndex]?.cardTransaction.map(
             (value: Transaction, index: number) => {
               index < 3 ? this.currentActiveCardTransaction.push(value) : null;
             }
           );
-          value.cards[e.activeIndex]?.cardTransaction.map(
-            (value: Transaction) => {
-              value.amountType
-                ? (this.totalAddAmount += value.amount as number)
-                : (this.totalSpendAmount += value.amount as number);
-            }
-          );
+          cards[e.activeIndex]?.cardTransaction.map((value: Transaction) => {
+            value.amountType
+              ? (this.totalAddAmount += value.amount as number)
+              : (this.totalSpendAmount += value.amount as number);
+          });
           this.graphDataUpdate(
-            value.cards[e.activeIndex]?.cardTransaction,
-            value.cards.length
+            cards[e.activeIndex]?.cardTransaction,
+            cards.length
           );
         }
       },
@@ -212,14 +296,19 @@ export class DashboardComponent {
     const toObject = e.find((value) => value);
     this.cardService.getUserCards(this.currentLoginUser.id).subscribe({
       next: (value) => {
-        this.currentActiveCard = value.cards[toObject?.activeIndex as number];
+        const cards = (value.cards || []).map((c) => ({
+          ...c,
+          cardNumber: this.crypto.decrypt(c.cardNumber),
+          cvv: this.crypto.decrypt(c.cvv),
+        }));
+        this.currentActiveCard = cards[toObject?.activeIndex as number];
         this.currentActiveCardTransaction = [];
-        value.cards[toObject?.activeIndex as number].cardTransaction.map(
+        cards[toObject?.activeIndex as number].cardTransaction.map(
           (value: Transaction, index: number) => {
             index < 3 ? this.currentActiveCardTransaction.push(value) : null;
           }
         );
-        value.cards[toObject?.activeIndex as number].cardTransaction.map(
+        cards[toObject?.activeIndex as number].cardTransaction.map(
           (value: Transaction) => {
             value.amountType
               ? (this.totalAddAmount += value.amount as number)
@@ -227,8 +316,8 @@ export class DashboardComponent {
           }
         );
         this.graphDataUpdate(
-          value.cards[toObject?.activeIndex as number].cardTransaction,
-          value.cards.length
+          cards[toObject?.activeIndex as number].cardTransaction,
+          cards.length
         );
         this.changeDetectorRef.detectChanges();
       },
@@ -253,29 +342,30 @@ export class DashboardComponent {
           this.totalSpendAmount = 0;
           this.cardService.getUserCards(this.currentLoginUser.id).subscribe({
             next: (value) => {
-              const cardIndex = value.cards.findIndex(
-                (value) => value.cardNumber === result
-              );
-              this.currentActiveCard = value.cards[cardIndex];
+              const cards = (value.cards || []).map((c) => ({
+                ...c,
+                cardNumber: this.crypto.decrypt(c.cardNumber),
+                cvv: this.crypto.decrypt(c.cvv),
+              }));
+              const cardIndex = cards.findIndex((v) => v.cardNumber === result);
+              this.currentActiveCard = cards[cardIndex];
               this.currentActiveCardTransaction = [];
 
-              value.cards[cardIndex].cardTransaction.map(
+              cards[cardIndex].cardTransaction.map(
                 (value: Transaction, index: number) => {
                   index < 3
                     ? this.currentActiveCardTransaction.push(value)
                     : null;
                 }
               );
-              value.cards[cardIndex].cardTransaction.map(
-                (value: Transaction) => {
-                  value.amountType
-                    ? (this.totalAddAmount += value.amount as number)
-                    : (this.totalSpendAmount += value.amount as number);
-                }
-              );
+              cards[cardIndex].cardTransaction.map((value: Transaction) => {
+                value.amountType
+                  ? (this.totalAddAmount += value.amount as number)
+                  : (this.totalSpendAmount += value.amount as number);
+              });
               this.graphDataUpdate(
-                value.cards[cardIndex].cardTransaction,
-                value.cards.length
+                cards[cardIndex].cardTransaction,
+                cards.length
               );
             },
             error: () => {},
@@ -295,15 +385,8 @@ export class DashboardComponent {
 
   filterGraphData(month: string): void {
     this.selectedMonth = month;
-    const index = this.months.indexOf(month) + 1;
-    this.startDate = `2023-${index < 10 ? '0' + index : index}-01`;
-    this.endDate = `2023-${index < 10 ? '0' + index : index}-30`;
-    this.userAllCards.length > 0
-      ? this.graphDataUpdate(
-          this.currentActiveCard.cardTransaction,
-          this.userAllCards.length
-        )
-      : null;
+    this.updateRange();
+    this.refreshGraph();
   }
 
   goToTransaction(): void {
@@ -311,5 +394,69 @@ export class DashboardComponent {
       ? this.sharedService.cardId.next(this.currentActiveCard?.id)
       : null;
     this.route.navigate(['/main-module/transaction']);
+  }
+
+  setYear(year: number): void {
+    this.selectedYear = year;
+    this.computeFilteredMonths();
+    // Ensure selectedMonth is within filtered list
+    if (!this.filteredMonths.includes(this.selectedMonth)) {
+      this.selectedMonth = this.filteredMonths[this.filteredMonths.length - 1];
+    }
+    this.updateRange();
+    this.refreshGraph();
+  }
+
+  setMode(mode: 'expense' | 'income' | 'net'): void {
+    this.mode = mode;
+    this.refreshGraph();
+  }
+
+  toggleIncludeWallet(): void {
+    this.includeWallet = !this.includeWallet;
+    this.refreshGraph();
+  }
+
+  updateRange(): void {
+    const monthIndex = this.months.indexOf(this.selectedMonth);
+    const start = new Date(this.selectedYear, monthIndex, 1);
+    const end = new Date(this.selectedYear, monthIndex + 1, 0);
+    const mm = (val: number) =>
+      val + 1 < 10 ? '0' + (val + 1) : String(val + 1);
+    const dd = (val: number) => (val < 10 ? '0' + val : String(val));
+    this.startDate = `${this.selectedYear}-${mm(monthIndex - 0 - 1)}-01`; // legacy not used in filter now
+    this.endDate = `${this.selectedYear}-${mm(monthIndex)}-${dd(
+      end.getDate()
+    )}`;
+  }
+
+  private computeFilteredMonths(): void {
+    const now = new Date();
+    const isCurrentYear = this.selectedYear === now.getFullYear();
+    if (isCurrentYear) {
+      const currentMonthIdx = now.getMonth(); // 0-based
+      // Show months from Jan up to and including current month
+      this.filteredMonths = this.months.slice(0, currentMonthIdx + 1);
+    } else {
+      this.filteredMonths = [...this.months];
+    }
+  }
+
+  refreshGraph(): void {
+    if (this.userAllCards.length > 0 && this.currentActiveCard) {
+      this.graphDataUpdate(
+        this.currentActiveCard.cardTransaction,
+        this.userAllCards.length
+      );
+    }
+  }
+
+  fakeResize(): void {
+    // Dispatch a resize event to force reflow of the chart after updates
+    setTimeout(() => {
+      try {
+        window.dispatchEvent(new Event('resize'));
+      } catch {}
+    }, 50);
   }
 }

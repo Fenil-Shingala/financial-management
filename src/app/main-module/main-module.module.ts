@@ -1,4 +1,5 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { MainModuleRoutingModule } from './main-module-routing.module';
 import { MainModuleComponent } from './main-module.component';
@@ -27,6 +28,8 @@ import { TransactionDialogComponent } from './dashboard/transaction-dialog/trans
 import { SwiperModule } from 'swiper/angular';
 import { MatDialogModule } from '@angular/material/dialog';
 import { AddAmountDialogComponent } from './wallet/add-amount-dialog/add-amount-dialog.component';
+import { LoaderComponent } from './shared/loader/loader.component';
+import { LoaderInterceptor } from './interceptors/loader.interceptor';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,7 @@ import { AddAmountDialogComponent } from './wallet/add-amount-dialog/add-amount-
     CardDialogComponent,
     TransactionDialogComponent,
     AddAmountDialogComponent,
+    LoaderComponent,
   ],
   imports: [
     CommonModule,
@@ -63,5 +67,8 @@ import { AddAmountDialogComponent } from './wallet/add-amount-dialog/add-amount-
     CreditCardDirectivesModule,
   ],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
+  ],
 })
 export class MainModuleModule {}

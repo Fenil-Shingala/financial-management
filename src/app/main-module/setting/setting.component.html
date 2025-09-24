@@ -1,4 +1,5 @@
-<div class="main-div w-100">
+<div class="main-div w-100 position-relative">
+  <app-loader></app-loader>
   <mat-tab-group>
     <mat-tab label="Category">
       <div class="category">
@@ -35,7 +36,7 @@
                   >
                 </td>
               </ng-container>
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
             </table>
             <div

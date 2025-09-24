@@ -16,6 +16,7 @@ import { CardServiceService } from 'src/app/services/api-service/card-service/ca
 import { CategoryServiceService } from 'src/app/services/api-service/category-service/category-service.service';
 import { UserServiceService } from 'src/app/services/api-service/user-service/user-service.service';
 import { noSpace } from 'src/app/validators/noSpace.validators';
+import { CryptoService } from 'src/app/services/crypto/crypto.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -41,6 +42,7 @@ export class TransactionDialogComponent {
     private categoryService: CategoryServiceService,
     private amountService: AmountServiceService,
     private dialogRef: MatDialogRef<TransactionDialogComponent>,
+    private crypto: CryptoService,
     @Inject(MAT_DIALOG_DATA) public expense: boolean
   ) {}
 
@@ -103,7 +105,11 @@ export class TransactionDialogComponent {
   getAllCards(): void {
     this.cardService.getUserCards(this.currentLoginUser.id).subscribe({
       next: (value) => {
-        this.allCards = value.cards;
+        this.allCards = (value.cards || []).map((c) => ({
+          ...c,
+          cardNumber: this.crypto.decrypt(c.cardNumber),
+          cvv: this.crypto.decrypt(c.cvv),
+        }));
         this.userWalletAmount = value.walletAmout;
       },
       error: () => {},

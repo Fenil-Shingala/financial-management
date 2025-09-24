@@ -5,7 +5,8 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoaderInterceptor } from './main-module/interceptors/loader.interceptor';
 import { ToastrModule } from 'ngx-toastr';
 import { NgApexchartsModule } from 'ng-apexcharts';
 
@@ -21,7 +22,9 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     NgApexchartsModule,
     ToastrModule.forRoot(),
   ],
-  providers: [],
+  providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: LoaderInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

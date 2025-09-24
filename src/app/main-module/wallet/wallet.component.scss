@@ -15,7 +15,7 @@
         }
       }
       .cards {
-        max-height: 540px;
+        max-height: calc(100vh - 146px);
         overflow-x: auto;
         .active-card {
           border: 3.5px solid var(--color-yellow);
@@ -114,7 +114,7 @@
         }
       }
       .transaction-items {
-        max-height: 79vh;
+        max-height: calc(100vh - 146px);
         overflow-y: auto;
         th {
           color: var(--color-cadet-gray);

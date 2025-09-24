@@ -11,6 +11,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { Card } from 'src/app/interface/card';
 import { AmountServiceService } from 'src/app/services/api-service/amount-service/amount-service.service';
 import { CardServiceService } from 'src/app/services/api-service/card-service/card-service.service';
+import { CryptoService } from 'src/app/services/crypto/crypto.service';
 import Swal from 'sweetalert2';
 
 @Component({
@@ -30,6 +31,7 @@ export class AddAmountDialogComponent {
     private cardService: CardServiceService,
     private amountService: AmountServiceService,
     private dialogref: MatDialogRef<AddAmountDialogComponent>,
+    private crypto: CryptoService,
     @Inject(MAT_DIALOG_DATA) public cardData: Card
   ) {}
 
@@ -53,7 +55,11 @@ export class AddAmountDialogComponent {
   getAllCards(): void {
     this.cardService.getUserCards(this.currentLoginUser.id).subscribe({
       next: (value) => {
-        this.allCards = value.cards;
+        this.allCards = (value.cards || []).map((c) => ({
+          ...c,
+          cardNumber: this.crypto.decrypt(c.cardNumber),
+          cvv: this.crypto.decrypt(c.cvv),
+        }));
       },
       error: () => {},
     });
@@ -135,9 +141,7 @@ export class AddAmountDialogComponent {
   ): ValidationErrors | null => {
     const selectedCardNumber = control.get('receivedFrom')?.value;
     const enterAmount = control.get('amount')?.value;
-    const selectedCard = this.allCards.find(
-      (value) => value.cardNumber === selectedCardNumber
-    );
+    const selectedCard = this.allCards.find((value) => value.cardNumber === selectedCardNumber);
     const selectedCardAmount = selectedCard ? selectedCard.cardAmount : 0;
     return selectedCardAmount < enterAmount && !this.cardData
       ? { checkCardAmount: true }

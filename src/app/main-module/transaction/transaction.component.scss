@@ -10,9 +10,14 @@
       max-width: 90vw;
       max-height: 84vh;
       overflow: auto;
+      background: var(--color-white);
       th {
         color: var(--color-cadet-gray);
         font-size: 13px;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+        background: var(--color-white);
       }
       .item-name {
         max-width: 220px;

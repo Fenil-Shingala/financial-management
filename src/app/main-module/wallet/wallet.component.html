@@ -1,4 +1,5 @@
-<div class="wallet w-100">
+<div class="wallet w-100 position-relative">
+  <app-loader></app-loader>
   <div class="main-div">
     <div class="row m-0 mt-3">
       <div class="col-sm-4 col-md-5 col-lg-4 mt-2 wallet-cards">
@@ -135,7 +136,10 @@
               </td>
             </ng-container>
 
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr
+              mat-header-row
+              *matHeaderRowDef="displayedColumns; sticky: true"
+            ></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
           </table>
           <div

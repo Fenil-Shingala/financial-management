@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { SharedServiceService } from 'src/app/services/shared-service/shared-service.service';
 import { ToastrService } from 'ngx-toastr';
 import { CardServiceService } from 'src/app/services/api-service/card-service/card-service.service';
+import { CryptoService } from 'src/app/services/crypto/crypto.service';
 
 @Component({
   selector: 'app-wallet',
@@ -28,6 +29,7 @@ export class WalletComponent {
     private sharedService: SharedServiceService,
     private route: Router,
     private dialog: MatDialog,
+    private crypto: CryptoService,
     private toastr: ToastrService
   ) {}
 
@@ -35,9 +37,14 @@ export class WalletComponent {
     this.cardService.getUserCards(this.currentLoginUser.id)?.subscribe({
       next: (value) => {
         if (value.cards.length >= 0) {
-          this.userAllCards = value.cards;
-          this.selectedCard = value.cards[0];
-          this.selectedCardTransaction = value.cards[0]?.cardTransaction;
+          const cards = (value.cards || []).map((c) => ({
+            ...c,
+            cardNumber: this.crypto.decrypt(c.cardNumber),
+            cvv: this.crypto.decrypt(c.cvv),
+          }));
+          this.userAllCards = cards;
+          this.selectedCard = cards[0];
+          this.selectedCardTransaction = cards[0]?.cardTransaction;
         }
       },
       error: () => {},
@@ -52,9 +59,14 @@ export class WalletComponent {
   getAllCards(): void {
     this.cardService.getUserCards(this.currentLoginUser.id)?.subscribe({
       next: (value) => {
-        this.userAllCards = value.cards;
+        const cards = (value.cards || []).map((c) => ({
+          ...c,
+          cardNumber: this.crypto.decrypt(c.cardNumber),
+          cvv: this.crypto.decrypt(c.cvv),
+        }));
+        this.userAllCards = cards;
         this.selectedCard =
-          value.cards[value.cards.length === 1 ? 0 : this.selectedCard.id - 1];
+          cards[cards.length === 1 ? 0 : this.selectedCard.id - 1];
       },
       error: () => {},
     });
@@ -84,9 +96,14 @@ export class WalletComponent {
       dialogRef.afterClosed().subscribe(() => {
         this.cardService.getUserCards(this.currentLoginUser.id)?.subscribe({
           next: (value) => {
-            this.selectedCard = value.cards[this.selectedCard.id - 1];
+            const cards = (value.cards || []).map((c) => ({
+              ...c,
+              cardNumber: this.crypto.decrypt(c.cardNumber),
+              cvv: this.crypto.decrypt(c.cvv),
+            }));
+            this.selectedCard = cards[this.selectedCard.id - 1];
             this.selectedCardTransaction =
-              value.cards[this.selectedCard.id - 1].cardTransaction;
+              cards[this.selectedCard.id - 1].cardTransaction;
           },
           error: () => {},
         });
